@@ -1,0 +1,140 @@
+Java "translator" for the input
+-----------------------------------
+#include <iostream>
+
+using namespace std;
+
+int biggerNumber(int one, int two){
+    if(one>two){
+        return one;
+    }else{
+        return two;
+    }
+}
+
+int smallerNumber(int one, int two){
+    if(one<two){
+        return one;
+    }else{
+        return two;
+    }
+}
+
+
+int main()
+{
+    bool is_running = true;
+    string input;
+    
+    int size = 1000;
+    int result_matrix[size][size];
+    for(int i=0; i<size; i++){
+        for(int y=0; y<size; y++){
+            result_matrix[i][y] = 0;
+        }
+    }
+    
+    int x1, x2, y1, y2;
+    while(is_running){
+        cin>>x1;
+        if(x1 == -1){
+            is_running=false;
+            break;
+        }else{
+            cin>>y1;
+            cin>>x2;
+            cin>>y2;
+        
+            if(x1==x2 || y1==y2){
+                for(int i= smallerNumber(y1, y2); i<= biggerNumber(y1, y2); i++){
+                    for(int j= smallerNumber(x1, x2); j<= biggerNumber(x1, x2); j++){
+                        result_matrix[i][j]++;
+                    }
+                }
+            } 
+        }
+    }
+    int count= 0;
+    for(int i=0; i<size; i++){
+        for(int j=0; j<size; j++){
+            //cout<<result_matrix[i][j];
+            if(result_matrix[i][j] >= 2){
+                count++;
+            }
+        }
+        //cout<<endl;
+    }
+    cout<<"Number of croses in the matrix is: "<<count;
+    return 0;
+}
+
+-------------------------------------------
+C++ Code for the solution
+-------------------------------------------
+#include <iostream>
+
+using namespace std;
+
+int biggerNumber(int one, int two){
+    if(one>two){
+        return one;
+    }else{
+        return two;
+    }
+}
+
+int smallerNumber(int one, int two){
+    if(one<two){
+        return one;
+    }else{
+        return two;
+    }
+}
+
+
+int main()
+{
+    bool is_running = true;
+    string input;
+    
+    int size = 1000;
+    int result_matrix[size][size];
+    for(int i=0; i<size; i++){
+        for(int y=0; y<size; y++){
+            result_matrix[i][y] = 0;
+        }
+    }
+    
+    int x1, x2, y1, y2;
+    while(is_running){
+        cin>>x1;
+        if(x1 == -1){
+            is_running=false;
+            break;
+        }else{
+            cin>>y1;
+            cin>>x2;
+            cin>>y2;
+        
+            if(x1==x2 || y1==y2){
+                for(int i= smallerNumber(y1, y2); i<= biggerNumber(y1, y2); i++){
+                    for(int j= smallerNumber(x1, x2); j<= biggerNumber(x1, x2); j++){
+                        result_matrix[i][j]++;
+                    }
+                }
+            } 
+        }
+    }
+    int count= 0;
+    for(int i=0; i<size; i++){
+        for(int j=0; j<size; j++){
+            //cout<<result_matrix[i][j];
+            if(result_matrix[i][j] >= 2){
+                count++;
+            }
+        }
+        //cout<<endl;
+    }
+    cout<<"Number of croses in the matrix is: "<<count;
+    return 0;
+}
