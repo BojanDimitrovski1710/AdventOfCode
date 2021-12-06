@@ -35,46 +35,39 @@ import java.util.*;
 public class Main
 {
 	public static void main(String[] args) {
-		List<Integer> fish = new ArrayList<Integer>();
+		long[] fish = new long[9];
 		Scanner sc = new Scanner(System.in);
 		String input = sc.nextLine();
 		String[] nums = input.split(",");
 		
 		for(int i=0; i<=8; i++){
-		    fish.add(0);
+		    fish[i]= 0;
 		}
 		
 		for(int i=0; i<nums.length; i++){
 		    int num = Integer.parseInt(nums[i]);
-		    fish.set(num, fish.get(num)+1);
+		    fish[num]++;
 		}
 		
-		System.out.println("Starting List: ");
-		System.out.println("0: " + fish.get(0));
-		System.out.println("1: " + fish.get(1));
-		System.out.println("2: " + fish.get(2));
-		System.out.println("3: " + fish.get(3));
-		System.out.println("4: " + fish.get(4));
-		System.out.println("5: " + fish.get(5));
-		System.out.println("6: " + fish.get(6));
-		System.out.println("7: " + fish.get(7));
-		System.out.println("8: " + fish.get(8));
+
 		
 		int days = sc.nextInt();
 		
-		for(int i=0; i<days; i++){
-		    int newFish = fish.get(0);
-		    fish.set(0,0);
-		    for(int j=1; j<=8; j++){
-		        fish.set(j-1, fish.get(j));
+		for(int i=1; i<=days; i++){
+		    long newFish = fish[0];
+		    fish[0] = 0;
+		    for(int j=0; j<8; j++){
+		        fish[j] = fish[j+1];
 		    }
-		    fish.set(8, fish.get(8) + newFish);
-		    fish.set(6, fish.get(6) + newFish);
+		    fish[8]= newFish;
+		    fish[6]+= newFish;
+		    
+		    System.out.println("Day " + i + ": " + fish[0] + " "+ fish[1] + " "+ fish[2] + " "+ fish[3] + " "+ fish[4] + " "+ fish[5] + " "+ fish[6] + " "+ fish[7] + " "+ fish[8] );
 		}
 		
-		int result = 0;
+		long result = 0;
 		for(int i=0; i<=8; i++){
-		    result += fish.get(i);
+		    result += fish[i];
 		}
 		
 		System.out.println("The number of fish after " + days + " days is: " + result);
