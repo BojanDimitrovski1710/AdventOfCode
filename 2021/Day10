@@ -1,0 +1,125 @@
+
+import java.util.*;
+import java.util.Stack;
+
+public class Main
+{
+   
+    
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		boolean is_running = true;
+		boolean is_legal;
+		char waste;
+		int error_score = 0;
+		long completion_score = 0;
+		
+		Stack<Character> charStack = new Stack<>();
+		List<Long> correction_scores = new ArrayList<Long>();
+		
+		while(is_running){
+		    String input = sc.nextLine();
+		    is_legal = true;
+		    charStack.clear();
+		    if(input.equals("end")){
+		        is_running = false;
+		    }else{
+		        for(int i=0; i<input.length() && is_legal; i++){
+		            char currChar = input.charAt(i);
+		            char charAtTop;
+		            switch (currChar){
+		                case ']':
+		                    if(charStack.isEmpty()){
+		                        error_score += 57;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    charAtTop = charStack.peek();
+		                    if(charAtTop != '['){
+		                        error_score += 57;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    
+		                    waste = charStack.pop();
+		                    break;
+		                case '}':
+		                    if(charStack.isEmpty()){
+		                        error_score += 1197;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    charAtTop = charStack.peek();
+		                    if(charAtTop != '{'){
+		                        error_score += 1197;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    
+		                    waste = charStack.pop();
+		                    break;
+		                case ')':
+		                    if(charStack.isEmpty()){
+		                        error_score += 3;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    charAtTop = charStack.peek();
+		                    if(charAtTop != '('){
+		                        error_score += 3;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    
+		                    waste = charStack.pop();
+		                    break;
+		                case '>':
+		                    if(charStack.isEmpty()){
+		                        error_score += 25137;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    charAtTop = charStack.peek();
+		                    if(charAtTop != '<'){
+		                        error_score += 25137;
+		                        is_legal = false;
+		                        break;
+		                    }
+		                    
+		                    waste = charStack.pop();
+		                    break;
+		                default:
+		                    charStack.push(currChar);
+		            }
+		        }
+		        if(is_legal){
+		            completion_score = 0;
+		            while(!charStack.isEmpty()){
+		                completion_score *= 5;
+		                char nextChar = charStack.pop();
+		                switch (nextChar){
+		                    case '(':
+		                        completion_score+=1;
+		                        break;
+		                    case '[':
+		                        completion_score+=2;
+		                        break;
+		                    case '{':
+		                        completion_score+=3;
+		                        break;
+		                    case '<':
+		                        completion_score+=4;
+		                        break;
+		                }
+		            }
+		            correction_scores.add(completion_score);
+		        }
+		    }
+		}
+		Collections.sort(correction_scores);
+		System.out.println("Total syntax error score is: " + error_score);
+		System.out.println("Middle correction score is: " + correction_scores.get(correction_scores.size()/2));
+		
+		
+	}
+}
