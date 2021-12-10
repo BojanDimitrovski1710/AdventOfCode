@@ -1,0 +1,89 @@
+
+import java.util.*;
+
+public class Main
+{
+    public static boolean isLowPoint(int[][] heatmap, int x_pos, int y_pos){
+        int num = heatmap[x_pos][y_pos];
+        if(num == 0) return true;
+        int check1 = heatmap[x_pos - 1][y_pos];
+        int check2 = heatmap[x_pos + 1][y_pos];
+        int check3 = heatmap[x_pos][y_pos - 1];
+        int check4 = heatmap[x_pos][y_pos + 1];
+        if(num<check1 && num<check2 && num<check3 && num<check4){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		boolean is_running = true;
+		String input = "";
+		int width = 100;
+		int height = 100;
+		int[][] heatmap = new int[height+2][width+2];
+		for(int i=0; i<width+2; i++){
+		    heatmap[0][i] = 9;
+		}
+		for(int i=1; i<height+1; i++){
+		        input = sc.nextLine();
+		        heatmap[i][0] = 9;
+		        heatmap[i][width+1] = 9;
+		        for(int j=1; j<width+1; j++){
+		           char digit = input.charAt(j-1);
+		           String s_digit = "" + digit;
+		           int num = Integer.parseInt(s_digit);
+		           heatmap[i][j] = num;
+		        }
+		    }
+		 for(int j=0; j<width+2; j++){
+		    heatmap[height+1][j] = 9;
+		    }
+		    
+		    System.out.println();
+		    System.out.println();
+		    System.out.println();
+		    System.out.println();
+		    
+		    //Print the matrix just to see if everything is ok
+		    for(int i=0; i<height+2; i++){
+		        for(int j=0; j<width+2; j++){
+		            System.out.print(heatmap[i][j]);
+		            System.out.print(" ");
+		        }
+		        System.out.println();
+		    }
+		    
+		    System.out.println();
+		    System.out.println();
+		    System.out.println();
+		    System.out.println();
+		    
+		    List<Integer> lowPoints = new ArrayList<Integer>();
+		    
+		    for(int i=1; i< height+1; i++){
+		        for(int j=1; j< width+1; j++){
+		            if(isLowPoint(heatmap, i, j)){
+		                lowPoints.add(heatmap[i][j]);
+		            }
+		        }
+		    }
+		    
+		    int result =0;
+		    
+		    for(int i=0; i<lowPoints.size(); i++){
+		        result += lowPoints.get(i);
+		    }
+		    
+		    result += lowPoints.size();
+		    
+		    System.out.println("Low Points are: ");
+		    for(int i=0; i<lowPoints.size(); i++){
+		        System.out.print(lowPoints.get(i));
+		        System.out.print(" ");
+		    }
+		    System.out.println("Sum of the risk levels is: " + result);
+	}
+}
