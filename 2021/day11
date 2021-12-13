@@ -1,0 +1,144 @@
+INCOMPLETE 
+
+/******************************************************************************
+
+                            Online Java Compiler.
+                Code, Compile, Run and Debug java program online.
+Write your code in this editor and press "Run" button to execute it.
+
+*******************************************************************************/
+import java.util.*;
+
+
+public class Main
+{
+    public static int flashes = 0;
+    public static int height = 10;
+    public static int width = 10;
+    
+    public static void printMatrix(int[][] matrix, int height, int width){
+        for(int i=0; i<height; i++){
+		    for(int j=0; j<width; j++){
+		        System.out.print(matrix[i][j]);
+		        System.out.print(" ");
+		    }
+		    System.out.println("");
+        }
+    }
+    
+    public static int[][] incrementMatrix(int[][] matrix, int height, int width){
+        for(int i=0; i<height; i++){
+		    for(int j=0; j<width; j++){
+		        matrix[i][j]++;
+		    }
+        }
+        return matrix;
+    }
+    
+    public static int[][] flash(int[][] matrix, int h_pos, int w_pos){
+        if(matrix[h_pos][w_pos] > 9){
+            if(h_pos > 0 && !already_flashed[h_pos-1][w_pos]){
+                matrix[h_pos-1][w_pos]++;
+                if(matrix[h_pos-1][w_pos] > 9)
+                    matrix = flash(matrix, h_pos-1, w_pos);
+            }
+            if(h_pos<height-1 && !already_flashed[h_pos+1][w_pos]){
+                matrix[h_pos+1][w_pos]++;
+                if(matrix[h_pos+1][w_pos] > 9)
+                    matrix = flash(matrix, h_pos+1, w_pos);
+
+            }
+            if(w_pos>0 && !already_flashed[h_pos][w_pos-1]){
+                matrix[h_pos][w_pos-1]++;
+                if(matrix[h_pos][w_pos-1] > 9)
+                    matrix = flash(matrix, h_pos, w_pos+1);
+
+            }
+            if(w_pos<width-1 && !already_flashed[h_pos][w_pos+1]){
+                matrix[h_pos][w_pos+1]++;
+                if(matrix[h_pos][w_pos+1] > 9)
+                    matrix = flash(matrix, h_pos, w_pos+1);
+
+            }
+            if(h_pos<height-1 && w_pos<width-1){
+                if(!already_flashed[h_pos+1][w_pos+1]){
+                    matrix[h_pos+1][w_pos+1]++;
+                    if(matrix[h_pos+1][w_pos+1] > 9)
+                    matrix = flash(matrix, h_pos+1, w_pos+1);
+                }
+
+            }
+            if(h_pos > 0 && w_pos<width-1){
+                if(!already_flashed[h_pos-1][w_pos+1]){
+                    matrix[h_pos-1][w_pos+1]++;
+                    if(matrix[h_pos-1][w_pos+1] > 9)
+                    matrix = flash(matrix, h_pos-1, w_pos+1);
+                }
+
+            }
+            if(h_pos>0 && w_pos>0){
+                if(!already_flashed[h_pos-1][w_pos-1]){
+                    matrix[h_pos-1][w_pos-1]++;
+                    if(matrix[h_pos-1][w_pos-1] > 9)
+                    matrix = flash(matrix, h_pos-1, w_pos-1);
+                }
+
+            }
+            if(h_pos<height-1 && w_pos>0){
+                if(!already_flashed[h_pos+1][w_pos-1]){
+                    matrix[h_pos+1][w_pos-1]++;
+                    if(matrix[h_pos+1][w_pos-1] > 9)
+                    matrix = flash(matrix, h_pos+1, w_pos-1);
+                }
+
+            }
+            already_flashed[h_pos][w_pos] = true;
+            flashes++;
+            matrix[h_pos][w_pos] = 0;
+        }
+        return matrix;
+    }
+    
+    public static boolean[][] already_flashed = new boolean[height][width];
+    
+    public static void clear_already_flased(){
+        for(int i=0; i<height; i++){
+            for(int j=0; j<width; j++){
+                already_flashed[i][j]= false;
+            }
+        }
+    }
+    
+	public static void main(String[] args) {
+		int[][] octopi = new int[height][width];
+		Scanner sc = new Scanner(System.in);
+		
+		for(int i=0; i<height; i++){
+		    String input = sc.nextLine();
+		    for(int j=0; j<width; j++){
+		        String curr_char = "";
+		        curr_char+=input.charAt(j);
+		        octopi[i][j] = Integer.parseInt(curr_char);
+		    }
+		}
+		System.out.println("");
+		System.out.println("");
+		System.out.println("The octopi matrix is as follows: ");
+		printMatrix(octopi, height, width);
+		
+		int steps = sc.nextInt();
+		
+		for(int i=1; i<=steps; i++){
+		    clear_already_flased();
+		    incrementMatrix(octopi, height, width);
+		    for(int j=0; j<height; j++){
+		        for(int k=0; k<width; k++){
+		            octopi = flash(octopi, j, k);
+		        }
+		    }
+		    System.out.println("Step " + i + " :");
+		    printMatrix(octopi, height, width);
+		}
+		System.out.println("Total number of flashes is: " + flashes);
+    }
+}
