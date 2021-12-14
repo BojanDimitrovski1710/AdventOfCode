@@ -1,19 +1,10 @@
-(INCOMPLETE)
-
-/******************************************************************************
-
-                            Online Java Compiler.
-                Code, Compile, Run and Debug java program online.
-Write your code in this editor and press "Run" button to execute it.
-
-*******************************************************************************/
 import java.util.*;
 
 
 public class Main
 {
-    public static int height = 16;
-    public static int width = 11;
+    public static int height = 1311;
+    public static int width = 1311;
     public static char[][] dotted_paper = new char[height][width];
     
     public static void print_paper(char[][] matrix){
@@ -26,10 +17,10 @@ public class Main
         }
     }
     
-    public static int countDots(char[][] matrix){
+    public static int countDots(char[][] matrix, int h, int w){
         int counter =0;
-        for(int i=0; i< height; i++){
-            for(int j=0; j<width; j++){
+        for(int i=0; i< h; i++){
+            for(int j=0; j<w; j++){
                 if(matrix[i][j] == '#')
                     counter++;
             }
@@ -38,55 +29,65 @@ public class Main
     }
     
     public static char[][] foldByX(char[][] matrix, int x){
-        char[][] result = new char[height][x];
-        result = clearPaper(result, height, x);
+        char[][] result = new char[height][Main.width - x -1];
+        result = clearPaper(result, height, Main.width - x -1);
         
-        for(int i=0; i< height; i++){
-            matrix[i][x] = '|';
+
+        
+        if(x <= width/2){
+            for(int i=0; i<height; i++){
+                for(int j=0; j<=x; j++){
+                    if(matrix[i][j]=='#' || matrix[i][2*x - j]=='#')
+                        result[i][j] = '#';
+                }
+            }
+            Main.width = Main.width - x -1;
+        }else{
+            for(int i=0; i<height; i++){
+                for(int j=width-1; j>x; j--){
+                    //System.out.println(j);
+                    if(matrix[i][j]=='#' || matrix[i][2*x - j]=='#'){
+                        result[i][2*x - j]= '#';
+                    }
+                }
+            }
+            Main.width = Main.width - x -1;
         }
         
-        if(x < width/2){
-            
-        }
-        
-        Main.width = x;
+
         return result;
     }
     
     public static char[][] foldByY(char[][] matrix, int y){
-        char[][] result = new char[y][width];
-        result = clearPaper(result, y, width);
+        char[][] result = new char[Main.height - y -1][width];
+        result = clearPaper(result, Main.height - y -1, width);
         int i=0, j=0;
         
-        for(i=0; i<width; i++){
-            matrix[y][i] = '-';
-        }
+
         
         if(y< height/2){
             i=0;
             j=0;
-            while(matrix[i][j] != '-'){
+            for(i=0; i<y; i++){
                 for(j=0; j<width; j++){
-                    if(matrix[i][j]=='#' || matrix[height - y - i][j]=='#'){
-                        result[i][j] = '#'
+                    if(matrix[i][j]=='#' || matrix[2*y - i][j]=='#'){
+                        result[i][j] = '#';
                     }
                 }
-                i++;
             }
+            Main.height = Main.height - y -1;
         }else{
-            i=height-1;
-            j=0;
-            while(matrix[i][j] != '-'){
+            for(i=height-1; i>y ; i--){
                 for(j=0; j<width; j++){
-                    if(matrix[i][j]=='#' || matrix[y-(i-y)][j]=='#'){
-                        result[i][j]='#';
+                    //System.out.println(j);
+                    if(matrix[i][j]=='#' || matrix[2*y - i][j]=='#'){
+                        result[2*y - i][j]='#';
                     }
                 }
             }
-            i--;
+            Main.height = Main.height - y - 1;
         }
         
-        height = y;
         return result;
     }
     
@@ -97,6 +98,17 @@ public class Main
 	        }
 	    }
 	    return paper;
+    }
+    
+    public static void printMatrix(char[][] matrix, int h, int w){
+        for(int i=0; i<h; i++){
+            for(int j=0; j<w; j++){
+                String to_print = "";
+                to_print+=matrix[i][j];
+                System.out.print(to_print);
+            }
+            System.out.println("");
+        }
     }
     
 	public static void main(String[] args){
@@ -115,21 +127,58 @@ public class Main
     	        dotted_paper[y][x] = '#';
 	        }
 	    }
+	    int z=1;
+	    char[][] fold1 = new char[height][width-655 - 1];
+	    fold1 = foldByX(dotted_paper, 655);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
 	    
-	    print_paper(dotted_paper);
-	    System.out.println("");
+	    char[][] fold2 = new char[height - 447 - 1][width];
+	    fold2 = foldByY(fold1, 447);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
 	    
-	    char[][] fold1 = new char[7][width];
-	    fold1 = foldByY(dotted_paper, 7);
+	    char[][] fold3 = new char[height][width -327 -1];
+	    fold3 = foldByX(fold2, 327);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
 	    
-	    print_paper(fold1);
-	    System.out.println("");
+	    char[][] fold4 = new char[height - 223-1][width];
+	    fold4 = foldByY(fold3, 223);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
 	    
-	    char[][] fold2 = new char[height][5];
-	    fold2 = foldByX(fold1, 5);
-	   
-	    print_paper(fold2);
-	    int res = countDots(fold2);
+	    char[][] fold5 = new char[height][width - 163-1];
+	    fold5 = foldByX(fold4, 163);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold6 = new char[height- 111-1][width];
+	    fold6 = foldByY(fold5, 111);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold7 = new char[height][width - 81-1];
+	    fold7 = foldByX(fold6, 81);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold8 = new char[height- 55-1][width];
+	    fold8 = foldByY(fold7, 55);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold9 = new char[height][width - 40 -1];
+	    fold9 = foldByX(fold8, 40);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold10 = new char[height - 27 -1][width];
+	    fold10 = foldByY(fold9, 27);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold11 = new char[height][width - 13 -1];
+	    fold11 = foldByY(fold10, 13);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    char[][] fold12 = new char[height][width - 6 -1];
+	    fold12 = foldByY(fold11, 6);
+	    System.out.println("Fold "+ z+ ") Height: " + height + " Width: " +width);
+	    
+	    int res = countDots(fold12, height, width);
 	    System.out.println("Number of dots is: " + res);
+	    
+	    printMatrix(fold12, height, width);
 	}
 }
