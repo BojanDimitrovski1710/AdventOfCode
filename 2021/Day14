@@ -1,0 +1,124 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.*;
+
+/*
+        CH -> B
+        HH -> N
+        CB -> H
+    NH -> C
+        HB -> C
+        HC -> B
+        HN -> C
+    NN -> C
+    BH -> H
+    NC -> B
+    NB -> B
+    BN -> B
+    BB -> N
+    BC -> B
+        CC -> N
+        CN -> C
+*/
+public class App {
+
+    public static int findMax(Stack<Integer> stack) {
+        Stack<Integer> temp = new Stack<Integer>();
+        temp.addAll(stack);
+        int max = -9999999;
+        while (!temp.isEmpty()) {
+            int currNumber = temp.pop();
+            if (currNumber > max) {
+                max = currNumber;
+            }
+        }
+        return max;
+    }
+
+    public static int findMin(Stack<Integer> stack) {
+        Stack<Integer> temp = new Stack<Integer>();
+        temp.addAll(stack);
+        int min = 9999999;
+        while (!temp.isEmpty()) {
+            int currNumber = temp.pop();
+            if (currNumber < min) {
+                min = currNumber;
+            }
+        }
+        return min;
+    }
+
+    public static Stack<Integer> getLetterCount(Stack<Character> stack) {
+        Stack<Integer> resultList = new Stack<Integer>();
+        Stack<Character> foundCharacters = new Stack<Character>();
+        Stack<Character> temp = stack;
+        while (!temp.isEmpty()) {
+            char currChar = temp.pop();
+            if (!foundCharacters.contains(currChar)) {
+                foundCharacters.add(currChar);
+                resultList.add(1);
+            } else {
+                int index = foundCharacters.indexOf(currChar);
+                resultList.set(index, resultList.get(index) + 1);
+            }
+        }
+        return resultList;
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader("src/input.txt"));
+        Scanner sc = new Scanner(System.in);
+        String input = br.readLine();
+        List<String> rulesList1 = new ArrayList<String>();
+        List<String> rulesList2 = new ArrayList<String>();
+
+        Stack<Character> resultStack = new Stack<Character>();
+
+        for (int i = 0; i < input.length(); i++) {
+            resultStack.add(input.charAt(i));
+        }
+
+        while ((input = br.readLine()) != null) {
+            String[] split = input.split(" -> ");
+            rulesList1.add(split[0]);
+            rulesList2.add(split[1]);
+        }
+
+        System.out.println("Rules List: ");
+        for (int i = 0; i < rulesList1.size(); i++) {
+            System.out.println(rulesList1.get(i) + " -> " + rulesList2.get(i));
+        }
+
+        Stack<Character> temp_stack = new Stack<Character>();
+
+        int steps = br.read();
+        System.out.println("I thought I had to take " + steps + " steps lol");
+        for (int j = 1; j <= 10; j++) {
+            Collections.reverse(resultStack);
+            temp_stack.clear();
+            int size = resultStack.size();
+            for (int i = 0; i < size - 1; i++) {
+                char currChar = resultStack.pop();
+                char nextChar = resultStack.peek();
+                temp_stack.add(currChar);
+                String search = "" + currChar + nextChar;
+                int index = rulesList1.indexOf(search);
+                char addition = rulesList2.get(index).charAt(0);
+                temp_stack.add(addition);
+            }
+
+            temp_stack.add(resultStack.pop());
+            resultStack.addAll(temp_stack);
+        }
+
+        // Collections.reverse(temp_stack);
+        resultStack = temp_stack;
+        Stack<Integer> countList = getLetterCount(resultStack);
+        int max = findMax(countList);
+        int min = findMin(countList);
+        System.out.println("Most common count: " + max);
+        System.out.println("Least common count: " + min);
+        System.out.println("After subtraction: " + (max - min));
+        br.close();
+    }
+}
