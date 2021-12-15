@@ -2,82 +2,149 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
-/*
-        CH -> B
-        HH -> N
-        CB -> H
-    NH -> C
-        HB -> C
-        HC -> B
-        HN -> C
-    NN -> C
-    BH -> H
-    NC -> B
-    NB -> B
-    BN -> B
-    BB -> N
-    BC -> B
-        CC -> N
-        CN -> C
-*/
 public class App {
 
-    public static int findMax(Stack<Integer> stack) {
-        Stack<Integer> temp = new Stack<Integer>();
-        temp.addAll(stack);
-        int max = -9999999;
-        while (!temp.isEmpty()) {
-            int currNumber = temp.pop();
-            if (currNumber > max) {
-                max = currNumber;
+    public static List<Character> foundCharacters = new ArrayList<Character>();
+    public static List<Long> foundCharactersCount = new ArrayList<Long>();
+    public static List<String> pairs = new ArrayList<String>();
+    public static List<Long> pairsCount = new ArrayList<Long>();
+    public static List<String> new_pairs = new ArrayList<String>();
+    public static List<Long> new_pairsCount = new ArrayList<Long>();
+    public static List<String> rulesList1 = new ArrayList<String>();
+    public static List<String> rulesList2 = new ArrayList<String>();
+
+    public static long findMax() {
+        Long max = Long.MIN_VALUE;
+        for (int i = 0; i < foundCharactersCount.size(); i++) {
+            if (foundCharactersCount.get(i) > max) {
+                max = foundCharactersCount.get(i);
             }
         }
+
         return max;
     }
 
-    public static int findMin(Stack<Integer> stack) {
-        Stack<Integer> temp = new Stack<Integer>();
-        temp.addAll(stack);
-        int min = 9999999;
-        while (!temp.isEmpty()) {
-            int currNumber = temp.pop();
-            if (currNumber < min) {
-                min = currNumber;
+    public static long findMin() {
+        Long min = Long.MAX_VALUE;
+        for (int i = 0; i < foundCharactersCount.size(); i++) {
+            if (foundCharactersCount.get(i) < min) {
+                min = foundCharactersCount.get(i);
             }
         }
         return min;
     }
 
-    public static Stack<Integer> getLetterCount(Stack<Character> stack) {
-        Stack<Integer> resultList = new Stack<Integer>();
-        Stack<Character> foundCharacters = new Stack<Character>();
-        Stack<Character> temp = stack;
+    public static void getLetterCount(Stack<Character> stack) {
+        Stack<Character> temp = new Stack<Character>();
+        temp.addAll(stack);
         while (!temp.isEmpty()) {
             char currChar = temp.pop();
-            if (!foundCharacters.contains(currChar)) {
-                foundCharacters.add(currChar);
-                resultList.add(1);
-            } else {
-                int index = foundCharacters.indexOf(currChar);
-                resultList.set(index, resultList.get(index) + 1);
+            parseCharacter(currChar);
+        }
+    }
+
+    public static void parsePair(String s) {
+        int index;
+        if (new_pairs.contains(s)) {
+            index = new_pairs.indexOf(s);
+            new_pairsCount.set(index, new_pairsCount.get(index) + 1);
+        } else {
+            new_pairs.add(s);
+            long one = 1;
+            new_pairsCount.add(one);
+        }
+
+    }
+
+    public static void parseCharacter(char currChar) {
+        if (!foundCharacters.contains(currChar)) {
+            foundCharacters.add(currChar);
+            long one = 1;
+            foundCharactersCount.add(one);
+        } else {
+            int index = foundCharacters.indexOf(currChar);
+            foundCharactersCount.set(index, foundCharactersCount.get(index) + 1);
+        }
+    }
+
+    public static void getLetterCount(List<Character> list) {
+        for (int i = 0; i < list.size(); i++) {
+            char currChar = list.get(i);
+            parseCharacter(currChar);
+        }
+    }
+
+    public static void switchArrays() {
+        pairs.clear();
+        pairs.addAll(new_pairs);
+
+        pairsCount.clear();
+        pairsCount.addAll(new_pairsCount);
+        new_pairsCount.clear();
+        for (int i = 0; i < pairsCount.size(); i++) {
+            long zero = 0;
+            new_pairsCount.add(zero);
+        }
+
+    }
+
+    public static void doStep() {
+        for (int i = 0; i < pairs.size(); i++) {
+
+            if (pairsCount.get(i) > 0) {
+                String pair = pairs.get(i);
+                if (rulesList1.contains(pair)) {
+                    char firstChar = pair.charAt(0);
+                    char secondChar = pair.charAt(1);
+                    int index = rulesList1.indexOf(pair);
+                    String insert = rulesList2.get(index);
+
+                    String newPair1 = "" + firstChar + insert;
+                    String newPair2 = "" + insert + secondChar;
+
+                    parsePair(newPair1);
+                    parsePair(newPair2);
+                    parseCharacter(insert.charAt(0));
+
+                    long factor = pairsCount.get(i);
+
+                    index = new_pairs.indexOf(newPair1);
+                    new_pairsCount.set(index, new_pairsCount.get(index) + factor - 1);
+                    index = new_pairs.indexOf(newPair2);
+                    new_pairsCount.set(index, new_pairsCount.get(index) + factor - 1);
+                    index = foundCharacters.indexOf(insert.charAt(0));
+                    foundCharactersCount.set(index, foundCharactersCount.get(index) + factor - 1);
+                    long zero = 0;
+                    pairsCount.set(i, zero);
+
+                }
+
             }
         }
-        return resultList;
     }
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader("src/input.txt"));
         Scanner sc = new Scanner(System.in);
         String input = br.readLine();
-        List<String> rulesList1 = new ArrayList<String>();
-        List<String> rulesList2 = new ArrayList<String>();
 
         Stack<Character> resultStack = new Stack<Character>();
-
+        // read and parse the initial sequence
         for (int i = 0; i < input.length(); i++) {
             resultStack.add(input.charAt(i));
         }
 
+        // count the initial pairs
+        for (int i = 1; i < resultStack.size(); i++) {
+            String pair = "" + resultStack.get(i - 1) + resultStack.get(i);
+            parsePair(pair);
+        }
+        switchArrays();
+
+        // read and parse how many steps we need to do
+        int steps = Integer.parseInt(br.readLine());
+
+        // read and parse the rules
         while ((input = br.readLine()) != null) {
             String[] split = input.split(" -> ");
             rulesList1.add(split[0]);
@@ -89,33 +156,17 @@ public class App {
             System.out.println(rulesList1.get(i) + " -> " + rulesList2.get(i));
         }
 
-        Stack<Character> temp_stack = new Stack<Character>();
-
-        int steps = br.read();
-        System.out.println("I thought I had to take " + steps + " steps lol");
-        for (int j = 1; j <= 10; j++) {
-            Collections.reverse(resultStack);
-            temp_stack.clear();
-            int size = resultStack.size();
-            for (int i = 0; i < size - 1; i++) {
-                char currChar = resultStack.pop();
-                char nextChar = resultStack.peek();
-                temp_stack.add(currChar);
-                String search = "" + currChar + nextChar;
-                int index = rulesList1.indexOf(search);
-                char addition = rulesList2.get(index).charAt(0);
-                temp_stack.add(addition);
-            }
-
-            temp_stack.add(resultStack.pop());
-            resultStack.addAll(temp_stack);
+        getLetterCount(resultStack);
+        for (int j = 1; j <= steps; j++) {
+            System.out.println("Step " + j);
+            doStep();
+            switchArrays();
+            System.out.println(pairs);
+            System.out.println(pairsCount);
         }
 
-        // Collections.reverse(temp_stack);
-        resultStack = temp_stack;
-        Stack<Integer> countList = getLetterCount(resultStack);
-        int max = findMax(countList);
-        int min = findMin(countList);
+        long max = findMax();
+        long min = findMin();
         System.out.println("Most common count: " + max);
         System.out.println("Least common count: " + min);
         System.out.println("After subtraction: " + (max - min));
