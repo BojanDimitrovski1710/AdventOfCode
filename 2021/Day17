@@ -1,0 +1,142 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class App {
+
+    public static List<Integer> validXvel = new ArrayList<Integer>();
+    public static List<Integer> validYvel = new ArrayList<Integer>();
+
+    public static int findMaxY() {
+        int result = -90;
+
+        for (int i = -90; i >= -90 && i <= 500; i++) {
+            // System.out.println("Ping " + i);
+            int pos = 0;
+            int velocity = i;
+            while (pos >= -90) {
+                pos += velocity;
+                velocity--;
+                if (checkY(pos)) {
+                    result = i;
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static void findValidY() {
+        for (int i = -90; i >= -90 && i <= 500; i++) {
+            int pos = 0;
+            int velocity = i;
+            while (pos >= -90) {
+                pos += velocity;
+                velocity--;
+                if (checkY(pos)) {
+                    validYvel.add(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void findValidX() {
+        for (int i = 292; i >= 0; i--) {
+            int pos = 0;
+            int velocity = i;
+            while (pos >= -90) {
+                pos += velocity;
+                velocity--;
+                if (checkX(pos)) {
+                    validXvel.add(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    public static int validPosCount() {
+        int result = 0;
+        for (int i = 0; i < validXvel.size(); i++) {
+            for (int j = 0; j < validYvel.size(); j++) {
+                if (checkVel(validXvel.get(i), validYvel.get(j))) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static boolean checkVel(int x, int y) {
+        int xPos = 0;
+        int yPos = 0;
+        while (yPos >= -90 && xPos <= 292) {
+            if (yPos >= -90 && yPos <= -57 && xPos >= 240 && xPos <= 292) {
+                return true;
+            }
+            xPos += x;
+            if (x > 0) {
+                x--;
+            } else {
+                if (x < 0) {
+                    x++;
+                }
+            }
+            yPos += y;
+            y--;
+
+        }
+        return false;
+    }
+
+    public static int findMaxHeight(int velocity) {
+        int pos = 0;
+        while (velocity != 0) {
+            pos += velocity;
+            velocity--;
+        }
+        return pos;
+    }
+
+    public static boolean checkY(int y) {
+        if (y >= -90 && y <= -57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean checkX(int x) {
+        if (x >= 240 && x <= 292) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static int bruteForce() {
+        int result = 0;
+        for (int i = 1000; i >= 0; i--) {
+            for (int j = -90; j >= -90 && j <= 1000; j++) {
+                if (checkVel(i, j)) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        int vel = findMaxY();
+        int res = findMaxHeight(vel);
+        findValidX();
+        findValidY();
+        int count = validPosCount();
+        int bf = bruteForce();
+        System.out.println("Max height possible: " + res);
+        System.out.println("Result using arrays: " + count);
+        System.out.println("Brute force: " + bf);
+    }
+}
