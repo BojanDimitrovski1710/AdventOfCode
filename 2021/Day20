@@ -1,0 +1,87 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+public class App {
+    public static ArrayList<String> enhanced_image = new ArrayList<String>();
+    public static ArrayList<Character[]> image = new ArrayList<Character[]>();
+    public static String algorithm = "";
+
+    public static void printImage() {
+        for (int i = 0; i < image.size(); i++) {
+            Character[] line = image.get(i);
+            for (int j = 0; j < line.length; j++) {
+                System.out.print(line[j]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static String translate(String s) {
+        String result = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '.') {
+                result += '0';
+            } else {
+                result += '1';
+            }
+        }
+
+        return result;
+    }
+
+    public static int binaryToDecimal(String binary) {
+        int result = 0;
+        for (int i = binary.length() - 1; i >= 0; i--) {
+            String s = "" + binary.charAt(i);
+            int num = Integer.parseInt(s);
+            if (num == 1) {
+                result += Math.pow(2, i);
+            }
+        }
+        return result;
+    }
+
+    public static void enhance(int i, int j){
+        Character[] line1 = image.get(i-1);
+        Character[] line2 = image.get(i);
+        Character[] line3 = image.get(i+1);
+        String binary = translate(line1) + translate(line2) + translate(line3);
+        int decimal = binaryToDecimal(binary);
+        
+        line2.
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        String file = "src/input.txt";
+
+        Boolean is_running = true;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        algorithm = br.readLine();
+        // System.out.println(algorithm);
+
+        String str;
+        while ((str = br.readLine()) != null) {
+            str = "";
+            Character[] whatever = new Character[50];
+            for (int i = 0; i < str.length(); i++) {
+                whatever[i] = str.charAt(i);
+            }
+            image.add(whatever);
+        }
+        System.out.println(image);
+        printImage();
+
+        /*
+         * for(int i=1; i<image.size()-1; i++){ String line = image.get(i); for(int j=1;
+         * j<line.length()-1; j++){ enhance(i, j); } }
+         */
+    }
+}
